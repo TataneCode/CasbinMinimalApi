@@ -5,4 +5,22 @@
       context: .
       dockerfile: CasbinMinimalApi/Dockerfile
     ports:
-      - "6666:80"
+      - "6666:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - PG_CONNECTION_STRING=Host=pgsql;Database=casbin-minimal;
+      - PGUSER=postgres
+      - PGPASSWORD=Azerty123!!!
+    depends_on:
+      - pgsql
+  
+  pgsql:
+    image: postgres:17
+    env_file:
+      - pg.env
+    volumes:
+        - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data: {}

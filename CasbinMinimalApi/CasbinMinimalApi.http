@@ -1,4 +1,4 @@
-@CasbinMinimalApi_HostAddress = http://localhost:5215
+@CasbinMinimalApi_HostAddress = http://localhost:6666
 
 GET {{CasbinMinimalApi_HostAddress}}/weatherforecast/
 Accept: application/json

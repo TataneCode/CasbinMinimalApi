@@ -1,8 +1,18 @@
+using CasbinMinimalApi.Domain;
+using CasbinMinimalApi.Endpoints;
+using CasbinMinimalApi.Infrastructure;
+using CasbinMinimalApi.Infrastructure.Authentication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+ConfigureDatabase(builder);
+
+ConfigureSecurity(builder);
 
 var app = builder.Build();
 
@@ -11,29 +21,55 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapApiEndpoints();
+using var scope = app.Services.CreateScope();
+var scissorsDbContext = scope.ServiceProvider.GetRequiredService<ScissorsDbContext>();
+await scissorsDbContext.Database.MigrateAsync();
+var authDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
+await authDbContext.Database.MigrateAsync();
 
-var summaries = new[]
+await app.RunAsync();
+return;
+
+void ConfigureDatabase(WebApplicationBuilder webApplicationBuilder)
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    var connectionString = webApplicationBuilder.Configuration["PG_CONNECTION_STRING"];
+    webApplicationBuilder.Services.AddDbContext<ScissorsDbContext>((_, b) =>
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
+        b.UseNpgsql(connectionString, options =>
+        {
+            options.MigrationsHistoryTable("__EFMigrationsHistory", "scissors");
+        });
+    });
+    webApplicationBuilder.Services.AddScoped<ScissorsDbContext>();
+    webApplicationBuilder.Services.AddDbContext<AuthenticationDbContext>((_, b) =>
+    {
+        b.UseNpgsql(connectionString, options =>
+        {
+            options.MigrationsHistoryTable("__EFMigrationsHistory", "authentication");
+        });
+    });
+    webApplicationBuilder.Services.AddScoped<AuthenticationDbContext>();
+}
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+void ConfigureSecurity(WebApplicationBuilder builder1)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    builder1.Services.AddIdentityCore<NeighborUser>(options =>
+        {
+            options.Stores.MaxLengthForKeys = 128;
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddSignInManager<SignInManager<NeighborUser>>()
+        .AddUserManager<UserManager<NeighborUser>>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<AuthenticationDbContext>()
+        .AddDefaultTokenProviders()
+        .AddApiEndpoints();
+    builder1.Services
+        .AddAuthentication(opts => opts.DefaultScheme = IdentityConstants.ApplicationScheme)
+        .AddIdentityCookies();
+
+    builder1.Services.AddAuthorization();
 }
