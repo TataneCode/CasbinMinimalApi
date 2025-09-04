@@ -1,4 +1,5 @@
 using CasbinMinimalApi.Domain;
+using CasbinMinimalApi.Endpoints.Authorization;
 using CasbinMinimalApi.Endpoints.WeatherForecast;
 
 namespace CasbinMinimalApi.Endpoints;
@@ -9,5 +10,6 @@ public static class ApiExtensions
     {
         app.MapWeatherApiEndpoints();
         app.MapIdentityApi<NeighborUser>();
+        app.MapAuthorizationEndpoints();
     }
 }

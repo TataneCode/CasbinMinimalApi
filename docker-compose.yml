@@ -17,6 +17,8 @@
   
   pgsql:
     image: postgres:17
+    ports:
+      - 18534:5432
     env_file:
       - pg.env
     volumes:
