@@ -1,0 +1,19 @@
+p, admin, polling-stations, create
+p, admin, polling-stations, read
+p, admin, polling-stations, update
+p, admin, polling-stations, delete
+p, admin, elections, create
+p, admin, elections, read
+p, admin, elections, update
+p, admin, elections, delete
+
+p, operator, polling-stations, read
+p, operator, polling-stations, update
+p, operator, elections, read
+
+p, viewer, polling-stations, read
+p, viewer, elections, read
+
+g, admin@kercia.com, admin
+g, operator@kercia.com, operator
+g, viewer@kercia.com, viewer

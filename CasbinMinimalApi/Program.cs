@@ -1,3 +1,5 @@
+using Casbin.Persist.Adapter.EFCore;
+using CasbinMinimalApi.Casbin;
 using CasbinMinimalApi.Domain;
 using CasbinMinimalApi.Endpoints;
 using CasbinMinimalApi.Infrastructure;
@@ -10,9 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-ConfigureDatabase(builder);
 
+ConfigureDatabase(builder);
 ConfigureSecurity(builder);
+builder.ConfigureCasbin();
 
 var app = builder.Build();
 
@@ -24,11 +27,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapApiEndpoints();
-using var scope = app.Services.CreateScope();
-var scissorsDbContext = scope.ServiceProvider.GetRequiredService<ScissorsDbContext>();
-await scissorsDbContext.Database.MigrateAsync();
-var authDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
-await authDbContext.Database.MigrateAsync();
+await MigrateAsync(app);
 
 await app.RunAsync();
 return;
@@ -72,4 +71,15 @@ void ConfigureSecurity(WebApplicationBuilder builder1)
         .AddIdentityCookies();
 
     builder1.Services.AddAuthorization();
+}
+
+async Task MigrateAsync(WebApplication webApplication)
+{
+    using var scope = webApplication.Services.CreateScope();
+    var scissorsDbContext = scope.ServiceProvider.GetRequiredService<ScissorsDbContext>();
+    await scissorsDbContext.Database.MigrateAsync();
+    var authDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
+    await authDbContext.Database.MigrateAsync();
+    var authorizationService = scope.ServiceProvider.GetRequiredService<IInitializationService>();
+    await authorizationService.LoadPoliciesAsync();
 }
