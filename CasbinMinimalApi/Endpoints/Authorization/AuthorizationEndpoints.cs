@@ -1,4 +1,4 @@
-using CasbinMinimalApi.Casbin;
+using CasbinMinimalApi.Application.Authorization;
 
 namespace CasbinMinimalApi.Endpoints.Authorization;
 
@@ -8,13 +8,13 @@ public static class AuthorizationEndpoints
   {
     var endpoints = app.MapGroup("/casbin").WithTags("Authorization").RequireAuthorization();
 
-    MapPermissionCheck(endpoints);
-    MapUserRoleEndpoints(endpoints);
-    MapRoleUserEndpoints(endpoints);
-    MapRolePermissionEndpoints(endpoints);
+    endpoints.MapPermissionCheck();
+    endpoints.MapUserRoleEndpoints();
+    endpoints.MapRoleUserEndpoints();
+    endpoints.MapRolePermissionEndpoints();
   }
 
-  private static void MapPermissionCheck(RouteGroupBuilder group)
+  private static void MapPermissionCheck(this RouteGroupBuilder group)
   {
     group.MapGet("/permission/check", CheckPermissionAsync)
       .WithName("CheckPermission")
@@ -22,7 +22,7 @@ public static class AuthorizationEndpoints
       .Produces(StatusCodes.Status200OK);
   }
 
-  private static void MapUserRoleEndpoints(RouteGroupBuilder group)
+  private static void MapUserRoleEndpoints(this RouteGroupBuilder group)
   {
     group.MapGet("/users/{user}/roles", GetRolesForUser)
       .WithName("GetRolesForUser")
@@ -40,7 +40,7 @@ public static class AuthorizationEndpoints
       .Produces(StatusCodes.Status200OK);
   }
 
-  private static void MapRoleUserEndpoints(RouteGroupBuilder group)
+  private static void MapRoleUserEndpoints(this RouteGroupBuilder group)
   {
     group.MapGet("/roles/{role}/users", GetUsersForRole)
       .WithName("GetUsersForRole")
@@ -48,7 +48,7 @@ public static class AuthorizationEndpoints
       .Produces<string[]>(StatusCodes.Status200OK);
   }
 
-  private static void MapRolePermissionEndpoints(RouteGroupBuilder group)
+  private static void MapRolePermissionEndpoints(this RouteGroupBuilder group)
   {
     group.MapPost("/roles/{role}/permissions", AddPermissionForRoleAsync)
       .WithName("AddPermissionForRole")

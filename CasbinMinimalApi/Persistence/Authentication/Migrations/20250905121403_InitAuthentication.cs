@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CasbinMinimanApi.Infrastructure.Authentication.Migrations
+namespace CasbinMinimanApi.Persistence.Authentication.Migrations
 {
     /// <inheritdoc />
     public partial class InitAuthentication : Migration

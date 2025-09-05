@@ -1,13 +1,14 @@
 using Casbin;
 using Casbin.Persist;
 using Casbin.Persist.Adapter.EFCore;
+using CasbinMinimalApi.Application.Authorization;
+using CasbinMinimalApi.Infrastructure.Authorization;
 using Microsoft.EntityFrameworkCore;
 
-namespace CasbinMinimalApi.Casbin;
+namespace CasbinMinimalApi.Startup;
 
 public static class CasbinExtensions
 {
-
   public static void ConfigureCasbin(this WebApplicationBuilder builder)
   {
     // Casbin - start
@@ -28,7 +29,7 @@ public static class CasbinExtensions
     builder.Services.AddScoped<IAuthorizationService, CasbinAuthorizationService>();
 
     // Initialize Casbin with default roles and permissions
-    builder.Services.AddScoped<IInitializationService, CasbinInitializationService>();
+    builder.Services.AddScoped<IRoleService, CasbinRoleService>();
     // Casbin - end
   }
 }

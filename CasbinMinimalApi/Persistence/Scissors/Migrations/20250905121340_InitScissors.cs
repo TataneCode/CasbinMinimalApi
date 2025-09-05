@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CasbinMinimanApi.Infrastructure.Scissors.Migrations
+namespace CasbinMinimanApi.Persistence.Scissors.Migrations
 {
     /// <inheritdoc />
     public partial class InitScissors : Migration

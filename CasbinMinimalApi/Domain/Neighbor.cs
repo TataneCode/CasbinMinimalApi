@@ -7,8 +7,13 @@ public sealed class Neighbor : Entity
     public string Email { get; private set; }
     
     public Address? Address { get; private set; }
-    
-    private Neighbor() { }
+
+    private Neighbor()
+    {
+        Name = string.Empty;
+        Email = string.Empty;
+        Address = null;
+    }
     
     public Neighbor(string name, string email, Address? address = null)
     {
@@ -30,8 +35,13 @@ public sealed class Address
     public string City { get; }
     
     public string ZipCode { get; }
-    
-    private Address() { }
+
+    private Address()
+    {
+        Street = string.Empty;
+        City = string.Empty;
+        ZipCode = string.Empty;
+    }
 
     public Address(string street, string city, string zipCode)
     {

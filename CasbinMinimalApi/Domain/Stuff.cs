@@ -9,8 +9,13 @@ public sealed class Stuff : Entity
     public Neighbor? Neighbor { get; private set; }
     
     public long  NeighborId { get; private set; }
-    
-    private Stuff() { }
+
+    private Stuff()
+    {
+        Name = string.Empty;
+        Description = string.Empty;
+        Neighbor = null;
+    }
     
     public Stuff(string name, string description, long neighborId)
     {
