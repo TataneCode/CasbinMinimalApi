@@ -17,4 +17,7 @@ public interface IAuthorizationService
 
     Task<bool> RemovePermissionForRoleAsync(string role, string resource, string action);
 
+    bool HasCurrentUserRole(string role);
+
+    bool HasCurrentUserAnyRole(params string[] roles);
 }

@@ -13,10 +13,8 @@ public class CasbinRoleService(
 {
     public async Task LoadPoliciesAsync()
     {
-
         try
         {
-
             var policyPath = Path.Combine(environment.ContentRootPath, "Casbin", "rbac_policy.csv");
 
             if (!File.Exists(policyPath))

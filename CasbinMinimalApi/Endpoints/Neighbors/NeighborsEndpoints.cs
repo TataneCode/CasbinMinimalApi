@@ -1,3 +1,4 @@
+using CasbinMinimalApi.Application.Authorization;
 using CasbinMinimalApi.Application.Repositories;
 using CasbinMinimalApi.Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -13,9 +14,9 @@ public static class NeighborEndpoints
 
     group.MapGet("/", GetAllAsync);
     group.MapGet("/{id}", GetByIdAsync).WithName("GetNeighborById");
-    group.MapPost("/", CreateAsync);
-    group.MapPut("/{id}", UpdateAsync);
-    group.MapDelete("/{id}", DeleteAsync);
+    group.MapPost("/", CreateAsync).RequireAuthorization();
+    group.MapPut("/{id}", UpdateAsync).RequireAuthorization();
+    group.MapDelete("/{id}", DeleteAsync).RequireAuthorization();
 
     return group;
   }
@@ -34,10 +35,13 @@ public static class NeighborEndpoints
         : TypedResults.Ok(ToDto(entity));
   }
 
-  private static async Task<Results<Created<NeighborDto>, BadRequest<string>>> CreateAsync(
+  private static async Task<Results<Created<NeighborDto>, BadRequest<string>, UnauthorizedHttpResult>> CreateAsync(
       CreateNeighborRequest request,
-      INeighborRepository repo)
+      INeighborRepository repo,
+      IAuthorizationService authService)
   {
+    if (!authService.HasCurrentUserAnyRole("admin", "operator")) return TypedResults.Unauthorized();
+
     if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Email))
       return TypedResults.BadRequest("Name and Email required.");
 
@@ -56,11 +60,14 @@ public static class NeighborEndpoints
     return TypedResults.Created($"/api/neighbors/{entity.Id}", dto);
   }
 
-  private static async Task<Results<Ok<NeighborDto>, NotFound, BadRequest<string>>> UpdateAsync(
+  private static async Task<Results<Ok<NeighborDto>, NotFound, BadRequest<string>, UnauthorizedHttpResult>> UpdateAsync(
       long id,
       UpdateNeighborRequest request,
-      INeighborRepository repo)
+      INeighborRepository repo,
+      IAuthorizationService authService)
   {
+    if (!authService.HasCurrentUserAnyRole("admin", "operator")) return TypedResults.Unauthorized();
+
     var entity = await repo.GetByIdAsync(id);
     if (entity is null) return TypedResults.NotFound();
 
@@ -82,8 +89,13 @@ public static class NeighborEndpoints
     return TypedResults.Ok(ToDto(entity));
   }
 
-  private static async Task<Results<NoContent, NotFound>> DeleteAsync(long id, INeighborRepository repo)
+  private static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult>> DeleteAsync(
+    long id,
+    INeighborRepository repo,
+    IAuthorizationService authService)
   {
+    if (!authService.HasCurrentUserRole("admin")) return TypedResults.Unauthorized();
+
     var entity = await repo.GetByIdAsync(id);
     if (entity is null) return TypedResults.NotFound();
 

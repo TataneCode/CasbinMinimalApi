@@ -6,22 +6,18 @@ Content-Type: application/json
 Accept: application/json
 
 {
-	"email": "alice@example.com",
+	"email": "viewer@duckburg.com",
 	"password": "Pass123$",
 	"confirmPassword": "Pass123$"
 }
 
 ### Identity - Login
-POST {{CasbinMinimalApi_HostAddress}}/login
+POST {{CasbinMinimalApi_HostAddress}}/login?useCookies=true
 Content-Type: application/json
 Accept: application/json
 
 {
-	"email": "alice@example.com",
+	"email": "viewer@duckburg.com",
 	"password": "Pass123$"
 }
-
-### Identity - Logout (si cookie auth)
-POST {{CasbinMinimalApi_HostAddress}}/logout
-Accept: application/json
 

@@ -8,19 +8,22 @@ public static class AuthenticationExtensions
 {
     public static void ConfigureSecurity(this WebApplicationBuilder builder)
     {
-        builder.Services.AddIdentityCore<NeighborUser>(options =>
+        builder.Services.AddIdentityCore<NeighborUser>(o =>
             {
-                options.Stores.MaxLengthForKeys = 128;
-                options.User.RequireUniqueEmail = true;
+                o.User.RequireUniqueEmail = true;
             })
-            .AddSignInManager<SignInManager<NeighborUser>>()
-            .AddUserManager<UserManager<NeighborUser>>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AuthenticationDbContext>()
-            .AddDefaultTokenProviders()
             .AddApiEndpoints();
+
         builder.Services
-            .AddAuthentication(opts => opts.DefaultScheme = IdentityConstants.ApplicationScheme)
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            })
+            .AddBearerToken(IdentityConstants.BearerScheme)
             .AddIdentityCookies();
 
         builder.Services.AddAuthorization();

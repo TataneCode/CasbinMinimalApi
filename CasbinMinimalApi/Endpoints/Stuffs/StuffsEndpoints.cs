@@ -13,9 +13,9 @@ public static class StuffEndpoints
 
     group.MapGet("/", GetAllAsync);
     group.MapGet("/{id:long}", GetByIdAsync).WithName("GetStuffById");
-    group.MapPost("/", CreateAsync);
-    group.MapPut("/{id:long}", UpdateAsync);
-    group.MapDelete("/{id:long}", DeleteAsync);
+    group.MapPost("/", CreateAsync).RequireAuthorization();
+    group.MapPut("/{id:long}", UpdateAsync).RequireAuthorization();
+    group.MapDelete("/{id:long}", DeleteAsync).RequireAuthorization();
 
     return group;
   }
