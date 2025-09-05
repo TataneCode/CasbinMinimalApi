@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CasbinMinimanApi.Persistence.Scissors.Migrations
 {
     [DbContext(typeof(ScissorsDbContext))]
-    [Migration("20250905121340_InitScissors")]
+    [Migration("20250905141749_InitScissors")]
     partial class InitScissors
     {
         /// <inheritdoc />

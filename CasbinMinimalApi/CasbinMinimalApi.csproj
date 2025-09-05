@@ -31,7 +31,7 @@
 
     <ItemGroup>
       <Folder Include="Casbin\" />
-      <Folder Include="Persistence\Repository\" />
+      <Folder Include="Endpoints\Neighbors\" />
     </ItemGroup>
 
     <ItemGroup>

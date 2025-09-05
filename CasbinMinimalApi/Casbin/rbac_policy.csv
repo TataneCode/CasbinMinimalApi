@@ -1,19 +1,19 @@
-p, admin, polling-stations, create
-p, admin, polling-stations, read
-p, admin, polling-stations, update
-p, admin, polling-stations, delete
-p, admin, elections, create
-p, admin, elections, read
-p, admin, elections, update
-p, admin, elections, delete
+p, admin, neighbor, create
+p, admin, neighbor, read
+p, admin, neighbor, update
+p, admin, neighbor, delete
+p, admin, stuff, create
+p, admin, stuff, read
+p, admin, stuff, update
+p, admin, stuff, delete
 
-p, operator, polling-stations, read
-p, operator, polling-stations, update
-p, operator, elections, read
+p, operator, neighbor, read
+p, operator, neighbor, update
+p, operator, stuff, read
 
-p, viewer, polling-stations, read
-p, viewer, elections, read
+p, viewer, neighbor, read
+p, viewer, stuff, read
 
-g, admin@kercia.com, admin
-g, operator@kercia.com, operator
-g, viewer@kercia.com, viewer
+g, admin@scissors.com, admin
+g, operator@scissors.com, operator
+g, viewer@scissors.com, viewer

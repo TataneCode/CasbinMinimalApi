@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CasbinMinimalApi.Application.Repositories;
 
-public class ScissorsGenericRepository<T>(ScissorsDbContext context) : IScissorsGenericRepository<T> where T : Entity, new()
+public abstract class ScissorsGenericRepository<T>(ScissorsDbContext context) : IScissorsGenericRepository<T> where T : Entity
 {
 
   public async Task<IEnumerable<T>> GetAllAsync()
@@ -12,7 +12,7 @@ public class ScissorsGenericRepository<T>(ScissorsDbContext context) : IScissors
     return await context.Set<T>().ToListAsync();
   }
 
-  public async Task<T?> GetByIdAsync(int id)
+  public async Task<T?> GetByIdAsync(long id)
   {
     return await context.Set<T>().FindAsync(id);
   }

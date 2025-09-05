@@ -10,6 +10,7 @@ builder.Services.AddOpenApi();
 builder.ConfigureDatabase();
 builder.ConfigureSecurity();
 builder.ConfigureCasbin();
+builder.Services.ConfigureApplicationServices();
 
 var app = builder.Build();
 

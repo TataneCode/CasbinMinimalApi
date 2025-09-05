@@ -3,9 +3,9 @@ namespace CasbinMinimalApi.Domain;
 public sealed class Neighbor : Entity
 {
     public string Name { get; private set; }
-    
+
     public string Email { get; private set; }
-    
+
     public Address? Address { get; private set; }
 
     private Neighbor()
@@ -14,26 +14,36 @@ public sealed class Neighbor : Entity
         Email = string.Empty;
         Address = null;
     }
-    
+
     public Neighbor(string name, string email, Address? address = null)
     {
         Name = name;
         Email = email;
         Address = address;
     }
-    
+
     public void UpdateAddress(Address? address)
     {
         Address = address;
+    }
+
+    public void UpdateName(string name)
+    {
+        Name = name;
+    }
+
+    public void UpdateEmail(string email)
+    {
+        Email = email;
     }
 }
 
 public sealed class Address
 {
     public string Street { get; }
-    
+
     public string City { get; }
-    
+
     public string ZipCode { get; }
 
     private Address()
@@ -55,6 +65,6 @@ public sealed class Address
         if (obj is not Address other) return false;
         return other.Street == Street && other.City == City && other.ZipCode == ZipCode;
     }
-    
+
     public override int GetHashCode() => HashCode.Combine(Street, City, ZipCode);
 }
