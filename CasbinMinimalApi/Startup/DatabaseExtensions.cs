@@ -26,14 +26,18 @@ public static class DatabaseExtensions
         });
         builder.Services.AddScoped<AuthenticationDbContext>();
     }
-    
+
     public static async Task MigrateAsync(this WebApplication webApplication)
     {
         using var scope = webApplication.Services.CreateScope();
+
         var scissorsDbContext = scope.ServiceProvider.GetRequiredService<ScissorsDbContext>();
         await scissorsDbContext.Database.MigrateAsync();
+        await scissorsDbContext.SeedDataAsync();
+
         var authDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
         await authDbContext.Database.MigrateAsync();
+
         var authorizationService = scope.ServiceProvider.GetRequiredService<IRoleService>();
         await authorizationService.LoadPoliciesAsync();
     }

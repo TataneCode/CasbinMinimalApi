@@ -14,6 +14,6 @@ p, operator, stuff, read
 p, viewer, neighbor, read
 p, viewer, stuff, read
 
-g, admin@scissors.com, admin
-g, operator@scissors.com, operator
-g, viewer@scissors.com, viewer
+g, admin@duckburg.com, admin
+g, operator@duckburg.com, operator
+g, viewer@duckburg.com, viewer

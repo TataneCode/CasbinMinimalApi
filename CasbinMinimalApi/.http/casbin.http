@@ -38,29 +38,3 @@ Accept: application/json
 ### Casbin Authorization - Remove permission from role
 DELETE {{CasbinMinimalApi_HostAddress}}/casbin/roles/admin/permissions?Resource=data1&Action=read
 Accept: application/json
-
-### Identity - Register
-POST {{CasbinMinimalApi_HostAddress}}/register
-Content-Type: application/json
-Accept: application/json
-
-{
-	"email": "alice@example.com",
-	"password": "Pass123$",
-	"confirmPassword": "Pass123$"
-}
-
-### Identity - Login
-POST {{CasbinMinimalApi_HostAddress}}/login
-Content-Type: application/json
-Accept: application/json
-
-{
-	"email": "alice@example.com",
-	"password": "Pass123$"
-}
-
-### Identity - Logout (si cookie auth)
-POST {{CasbinMinimalApi_HostAddress}}/logout
-Accept: application/json
-

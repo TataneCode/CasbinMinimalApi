@@ -1,0 +1,43 @@
+@CasbinMinimalApi_HostAddress = http://localhost:8680
+
+### Liste des voisins
+GET {{CasbinMinimalApi_HostAddress}}/api/neighbors
+Accept: application/json
+
+### Création d'un voisin
+POST {{CasbinMinimalApi_HostAddress}}/api/neighbors
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Alice Martin",
+  "email": "alice.martin@example.com",
+  "address": {
+    "street": "12 rue des Lilas",
+    "city": "Lyon",
+    "zipCode": "69000"
+  }
+}
+
+### Récupération d'un voisin par id (utilise l'id capturé)
+GET {{CasbinMinimalApi_HostAddress}}/api/neighbors/1
+Accept: application/json
+
+### Mise à jour d'un voisin
+PUT {{CasbinMinimalApi_HostAddress}}/api/neighbors/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Alice M. (updated)",
+  "email": "alice.updated@example.com",
+  "address": {
+    "street": "99 avenue Centrale",
+    "city": "Lyon",
+    "zipCode": "69001"
+  }
+}
+
+### Suppression d'un voisin
+DELETE {{CasbinMinimalApi_HostAddress}}/api/neighbors/1
+Accept: application/json

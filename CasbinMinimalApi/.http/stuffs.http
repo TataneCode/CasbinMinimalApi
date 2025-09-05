@@ -1,0 +1,36 @@
+@CasbinMinimalApi_HostAddress = http://localhost:8680
+
+### Liste des stuffs
+GET {{CasbinMinimalApi_HostAddress}}/api/stuffs
+Accept: application/json
+
+### Création d'un stuff
+POST {{CasbinMinimalApi_HostAddress}}/api/stuffs
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Perceuse Bosch",
+  "description": "Perceuse à percussion",
+  "neighborId": 1
+}
+
+> {% client.global.set("stuffId", response.body.id); %}
+
+### Récupération d'un stuff
+GET {{CasbinMinimalApi_HostAddress}}/api/stuffs/1
+Accept: application/json
+
+### Mise à jour d'un stuff
+PUT {{CasbinMinimalApi_HostAddress}}/api/stuffs/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Perceuse Bosch Pro",
+  "description": "Modèle professionnel revisé"
+}
+
+### Suppression d'un stuff
+DELETE {{CasbinMinimalApi_HostAddress}}/api/stuffs/1
+Accept: application/json
