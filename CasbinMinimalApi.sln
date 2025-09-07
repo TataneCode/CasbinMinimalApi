@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme.md = Readme.md
 		pg.env = pg.env
 		.gitignore = .gitignore
+		.github\workflows\docker-publish.yml = .github\workflows\docker-publish.yml
 	EndProjectSection
 EndProject
 Global

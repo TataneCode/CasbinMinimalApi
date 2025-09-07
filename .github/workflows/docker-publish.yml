@@ -3,7 +3,11 @@ name: Build and Push Docker image
 on:
   push:
     branches:
-      - main   # ou ta branche "back"
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -13,9 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check DockerHub secrets
+        run: |
+          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ] || [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+            echo "ERROR: DockerHub secrets DOCKERHUB_USERNAME and/or DOCKERHUB_TOKEN are not set."
+            echo "Please add them in: Settings → Secrets and variables → Actions for this repository."
+            exit 1
+          fi
+
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -24,4 +37,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: tatanecode/casbin-minimal-api:latest
+          tags: |
+            tatanecode/casbin-minimal-api:latest
+            tatanecode/casbin-minimal-api:${{ github.sha }}
