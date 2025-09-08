@@ -66,7 +66,7 @@ public static class AuthorizationEndpoints
   // Handlers
   private static async Task<IResult> CheckPermissionAsync([AsParameters] PermissionQuery query, IAuthorizationService service)
   {
-    var allowed = await service.HasPermissionAsync(query.User, query.Resource, query.Action);
+    var allowed = await service.HasPermissionAsync(query.Resource, query.Action, query.User);
     return Results.Ok(new { allowed });
   }
 

@@ -9,7 +9,10 @@ p, admin, stuff, delete
 
 p, operator, neighbor, read
 p, operator, neighbor, update
+p, operator, neighbor, create
 p, operator, stuff, read
+p, operator, stuff, update
+p, operator, stuff, create
 
 p, viewer, neighbor, read
 p, viewer, stuff, read

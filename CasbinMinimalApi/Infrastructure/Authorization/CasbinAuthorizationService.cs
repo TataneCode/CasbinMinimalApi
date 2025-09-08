@@ -8,9 +8,10 @@ public class CasbinAuthorizationService(
     IEnforcer enforcer,
     IHttpContextAccessor contextAccessor) : IAuthorizationService
 {
-    public async Task<bool> HasPermissionAsync(string user, string resource, string action)
+    public async Task<bool> HasPermissionAsync(string resource, string action, string? user = null)
     {
-        return await enforcer.EnforceAsync(user, resource, action);
+        var userEmail = user ?? GetCurrentUserEmail();
+        return await enforcer.EnforceAsync(userEmail, resource, action);
     }
 
     public async Task<bool> AddRoleForUserAsync(string user, string role)

@@ -17,10 +17,10 @@ public abstract class ScissorsGenericRepository<T>(ScissorsDbContext context) : 
     return await context.Set<T>().FindAsync(id);
   }
 
-  public async Task AddAsync(T entity)
+  public void Add(T entity)
   {
     entity.CreatedOn = DateTime.UtcNow;
-    await context.Set<T>().AddAsync(entity);
+    context.Set<T>().Add(entity);
   }
 
   public void Update(T entity)

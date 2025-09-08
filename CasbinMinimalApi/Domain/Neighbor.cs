@@ -17,6 +17,7 @@ public sealed class Neighbor : Entity
 
     public Neighbor(string name, string email, Address? address = null)
     {
+        Id = 0;
         Name = name;
         Email = email;
         Address = address;

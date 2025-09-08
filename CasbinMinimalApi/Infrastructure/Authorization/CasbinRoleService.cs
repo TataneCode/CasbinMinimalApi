@@ -39,4 +39,20 @@ public class CasbinRoleService(
             logger.LogError(ex, "Failed to initialize Casbin policies from files");
         }
     }
+
+    public async Task<bool> HasAnyPoliciesAsync()
+    {
+        try
+        {
+            enforcer.SetAdapter(adapter);
+            await enforcer.LoadPolicyAsync();
+
+            return enforcer.GetPolicy().Any() || enforcer.GetGroupingPolicy().Any();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to check existing Casbin policies");
+            return false;
+        }
+    }
 }

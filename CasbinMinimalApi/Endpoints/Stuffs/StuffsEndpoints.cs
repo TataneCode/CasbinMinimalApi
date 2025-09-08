@@ -49,7 +49,7 @@ public static class StuffEndpoints
         request.NeighborId
     );
 
-    await repo.AddAsync(entity);
+    repo.Add(entity);
     await repo.SaveChangesAsync();
 
     var dto = new StuffDto(entity.Id, entity.Name, entity.Description, entity.NeighborId);

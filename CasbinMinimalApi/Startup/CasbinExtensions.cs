@@ -11,7 +11,8 @@ public static class CasbinExtensions
 {
   public static void ConfigureCasbin(this WebApplicationBuilder builder)
   {
-    // Casbin - start
+    if (EF.IsDesignTime) return;
+
     var connectionString = builder.Configuration["PG_CONNECTION_STRING"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     var options = new DbContextOptionsBuilder<CasbinDbContext<int>>()
     .UseNpgsql(connectionString)
@@ -30,6 +31,5 @@ public static class CasbinExtensions
 
     // Initialize Casbin with default roles and permissions
     builder.Services.AddScoped<IRoleService, CasbinRoleService>();
-    // Casbin - end
   }
 }

@@ -29,6 +29,8 @@ public static class DatabaseExtensions
 
     public static async Task MigrateAsync(this WebApplication webApplication)
     {
+        if (EF.IsDesignTime) return;
+
         using var scope = webApplication.Services.CreateScope();
 
         var scissorsDbContext = scope.ServiceProvider.GetRequiredService<ScissorsDbContext>();
@@ -39,6 +41,7 @@ public static class DatabaseExtensions
         await authDbContext.Database.MigrateAsync();
 
         var authorizationService = scope.ServiceProvider.GetRequiredService<IRoleService>();
+        if (await authorizationService.HasAnyPoliciesAsync()) return;
         await authorizationService.LoadPoliciesAsync();
     }
 }

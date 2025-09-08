@@ -3,7 +3,7 @@ namespace CasbinMinimalApi.Application.Authorization;
 
 public interface IAuthorizationService
 {
-    Task<bool> HasPermissionAsync(string user, string resource, string action);
+    Task<bool> HasPermissionAsync(string resource, string action, string? user = null);
 
     Task<bool> AddRoleForUserAsync(string user, string role);
 

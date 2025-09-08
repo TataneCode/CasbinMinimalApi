@@ -1,6 +1,7 @@
 using CasbinMinimalApi.Application.Authorization;
 using CasbinMinimalApi.Application.Repositories;
 using CasbinMinimalApi.Domain;
+using CasbinMinimalApi.Startup;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CasbinMinimalApi.Endpoints;
@@ -35,12 +36,12 @@ public static class NeighborEndpoints
         : TypedResults.Ok(ToDto(entity));
   }
 
-  private static async Task<Results<Created<NeighborDto>, BadRequest<string>, UnauthorizedHttpResult>> CreateAsync(
+  private static async Task<Results<Created<NeighborDto>, BadRequest<string>, ForbidHttpResult>> CreateAsync(
       CreateNeighborRequest request,
       INeighborRepository repo,
       IAuthorizationService authService)
   {
-    if (!authService.HasCurrentUserAnyRole("admin", "operator")) return TypedResults.Unauthorized();
+    if (!await authService.HasPermissionAsync(CasbinResources.Neighbor, CasbinActions.Create)) return TypedResults.Forbid();
 
     if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Email))
       return TypedResults.BadRequest("Name and Email required.");
@@ -53,20 +54,20 @@ public static class NeighborEndpoints
 
     Neighbor entity = new(request.Name, request.Email, address);
 
-    await repo.AddAsync(entity);
+    repo.Add(entity);
     await repo.SaveChangesAsync();
 
     var dto = ToDto(entity);
     return TypedResults.Created($"/api/neighbors/{entity.Id}", dto);
   }
 
-  private static async Task<Results<Ok<NeighborDto>, NotFound, BadRequest<string>, UnauthorizedHttpResult>> UpdateAsync(
+  private static async Task<Results<Ok<NeighborDto>, NotFound, BadRequest<string>, ForbidHttpResult>> UpdateAsync(
       long id,
       UpdateNeighborRequest request,
       INeighborRepository repo,
       IAuthorizationService authService)
   {
-    if (!authService.HasCurrentUserAnyRole("admin", "operator")) return TypedResults.Unauthorized();
+    if (!await authService.HasPermissionAsync(CasbinResources.Neighbor, CasbinActions.Update)) return TypedResults.Forbid();
 
     var entity = await repo.GetByIdAsync(id);
     if (entity is null) return TypedResults.NotFound();
@@ -89,12 +90,12 @@ public static class NeighborEndpoints
     return TypedResults.Ok(ToDto(entity));
   }
 
-  private static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult>> DeleteAsync(
+  private static async Task<Results<NoContent, NotFound, ForbidHttpResult>> DeleteAsync(
     long id,
     INeighborRepository repo,
     IAuthorizationService authService)
   {
-    if (!authService.HasCurrentUserRole("admin")) return TypedResults.Unauthorized();
+    if (!await authService.HasPermissionAsync(CasbinResources.Neighbor, CasbinActions.Delete)) return TypedResults.Forbid();
 
     var entity = await repo.GetByIdAsync(id);
     if (entity is null) return TypedResults.NotFound();
