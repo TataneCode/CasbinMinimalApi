@@ -35,7 +35,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: CasbinMinimalApi/Dockerfile
+          context: CasbinMinimalApi
+          file: CasbinMinimalApi/Dockerfile
           push: true
           tags: |
             tatanecode/casbin-minimal-api:latest
