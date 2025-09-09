@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CasbinMinimanApi.Persistence.Authentication.Migrations
 {
     [DbContext(typeof(AuthenticationDbContext))]
-    [Migration("20250908090803_UpdateAuthentication")]
+    [Migration("20250909130035_UpdateAuthentication")]
     partial class UpdateAuthentication
     {
         /// <inheritdoc />

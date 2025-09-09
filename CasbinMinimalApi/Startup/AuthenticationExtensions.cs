@@ -1,5 +1,7 @@
+using System.Net;
 using CasbinMinimalApi.Domain;
 using CasbinMinimalApi.Persistence.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 
 namespace CasbinMinimalApi.Startup;
@@ -17,14 +19,15 @@ public static class AuthenticationExtensions
             .AddApiEndpoints();
 
         builder.Services
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-            })
-            .AddBearerToken(IdentityConstants.BearerScheme)
+            .AddAuthentication(IdentityConstants.ApplicationScheme)
             .AddIdentityCookies();
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.Name = "casbin-minimal-api-auth";
+        });
 
         builder.Services.AddAuthorization();
     }
