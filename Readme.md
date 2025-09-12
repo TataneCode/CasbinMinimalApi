@@ -17,8 +17,8 @@ As .net 10 default behaviour, once started, the description of the API is availa
 As there are no default dbcontext factory, follow those steps to run migration :
 - Place yourself in the CasbinMinimalApi project folder
 - Set env variable before generating
-  - Connection string : Host=127.0.0.1:18534;Database=casbin-minimal;User ID=postgres;Password=Azerty123!!!
-  - example : $env:PG_CONNECTION_STRING="Host=127.0.0.1:18534;Database=casbin-minimal;User ID=postgres;Password=Azerty123!!!"
+  - Connection string : Can be anything
+  - example : $env:PG_CONNECTION_STRING="_"
 - Run the migration according the context
   - dotnet ef migrations add "\<MigrationName\>" --context ScissorsDbContext --output-dir Persistence/Scissors/Migrations
   - dotnet ef migrations add "\<MigrationName\>" --context AuthenticationDbContext --output-dir Persistence/Authentication/Migrations

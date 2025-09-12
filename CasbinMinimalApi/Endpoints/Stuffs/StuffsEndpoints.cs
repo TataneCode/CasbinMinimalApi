@@ -1,5 +1,6 @@
 using CasbinMinimalApi.Application.Repositories;
 using CasbinMinimalApi.Domain;
+using CasbinMinimalApi.Infrastructure.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CasbinMinimalApi.Endpoints;
@@ -13,9 +14,9 @@ public static class StuffEndpoints
 
     group.MapGet("/", GetAllAsync);
     group.MapGet("/{id:long}", GetByIdAsync).WithName("GetStuffById");
-    group.MapPost("/", CreateAsync).RequireAuthorization();
-    group.MapPut("/{id:long}", UpdateAsync).RequireAuthorization();
-    group.MapDelete("/{id:long}", DeleteAsync).RequireAuthorization();
+    group.MapPost("/", CreateAsync).RequireAuthorization().WithCasbin("stuff", "create");
+    group.MapPut("/{id:long}", UpdateAsync).RequireAuthorization().WithCasbin("stuff", "update");
+    group.MapDelete("/{id:long}", DeleteAsync).RequireAuthorization().WithCasbin("stuff", "delete");
 
     return group;
   }

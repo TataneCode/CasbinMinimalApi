@@ -32,4 +32,7 @@ public static class CasbinExtensions
     // Initialize Casbin with default roles and permissions
     builder.Services.AddScoped<IRoleService, CasbinRoleService>();
   }
+
+  public static IApplicationBuilder UseCasbinAuthorization(this IApplicationBuilder app)
+      => app.UseMiddleware<CasbinAuthorizationMiddleware>();
 }

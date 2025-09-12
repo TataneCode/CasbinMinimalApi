@@ -23,6 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCasbinAuthorization();
 app.MapApiEndpoints();
 
 await app.MigrateAsync();
