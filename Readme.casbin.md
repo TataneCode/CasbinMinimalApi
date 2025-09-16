@@ -41,9 +41,9 @@ You can combine approaches pragmatically.
 ⚠ Casbin does not manage authentication. Protect controllers/endpoints separately.
 
 ## Official Documentation
-- [Casbin RBAC Configuration](#https://casbin.org/docs/rbac)
-- [Casbin policy storage + adapter api](#https://casbin.org/docs/policy-storage)
+- [Casbin RBAC Configuration](https://casbin.org/docs/rbac)
+- [Casbin policy storage + adapter api](https://casbin.org/docs/policy-storage)
 
-- [EFCore adapter for Casbin](#https://github.com/casbin-net/EFCore-Adapter)
+- [EFCore adapter for Casbin](https://github.com/casbin-net/EFCore-Adapter)
 
-- [Policy editor](#https://editor.casbin.org/)
+- [Policy editor](https://editor.casbin.org/)
