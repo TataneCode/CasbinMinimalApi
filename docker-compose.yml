@@ -1,4 +1,16 @@
 ﻿services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    command: 
+      - "start-dev"
+      - "--http-port=8080"
+    env_file:
+      - kc.env
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    ports:
+      - "8780:8080"
+  
   casbin-api:
     image: casbinminimalapi
     build:
@@ -18,11 +30,10 @@
   pgsql:
     image: postgres:17
     ports:
-      - "18534:5432"
-    env_file:
-      - pg.env
+      - "18534:5432" 
     volumes:
-        - pg-data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql/data
 
 volumes:
-  pg-data: {}
+  pg-data: { }
+  keycloak_data: { }
