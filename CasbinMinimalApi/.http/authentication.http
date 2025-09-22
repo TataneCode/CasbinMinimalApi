@@ -17,7 +17,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
-	"email": "operator@duckburg.com",
-	"password": "Pass123$"
+  "email": "operator@duckburg.com",
+  "password": "Pass123$"
 }
+
+### Identity - Login
+POST {{CasbinMinimalApi_HostAddress}}/login/keycloak
+Accept: application/json
 

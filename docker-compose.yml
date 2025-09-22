@@ -9,7 +9,7 @@
     volumes:
       - keycloak_data:/opt/keycloak/data
     ports:
-      - "8780:8080"
+      - "8780:8080" 
   
   casbin-api:
     image: casbinminimalapi
@@ -24,6 +24,9 @@
       - PG_CONNECTION_STRING=Host=pgsql;Database=casbin-minimal;
       - PGUSER=postgres
       - PGPASSWORD=Azerty123!!!
+      - OPENID_CLIENT=scissors-auth-client
+      - OPENID_AUTHORITY=http://keycloak:8080/realms/scissors-realm
+      - OPENID_SECRET=chtX1m8YPSLos2AD7JSIYo4DHV5F2HCc
     depends_on:
       - pgsql
   
