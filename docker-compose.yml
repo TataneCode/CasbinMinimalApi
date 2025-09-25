@@ -1,7 +1,34 @@
-﻿services:
+﻿networks:
+  traefik-public:
+    external: false
+  internal:
+    external: false
+
+volumes:
+  pg-data: {}
+  keycloak_data: {}
+  traefik-certificates: {}
+
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--log.level=DEBUG"
+    ports:
+      - "9480:80"
+      - "9443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik-public
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.0
-    command: 
+    command:
       - "start-dev"
       - "--http-port=8080"
     env_file:
@@ -9,15 +36,22 @@
     volumes:
       - keycloak_data:/opt/keycloak/data
     ports:
-      - "8780:8080" 
-  
+      - "8081:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`auth.casbin`)"
+      - "traefik.http.routers.keycloak.entrypoints=websecure"
+      - "traefik.http.routers.keycloak.tls=true"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+    networks:
+      - traefik-public
+      - internal
+
   casbin-api:
     image: casbinminimalapi
     build:
       context: .
       dockerfile: CasbinMinimalApi/Dockerfile
-    ports:
-      - "8680:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
@@ -25,18 +59,28 @@
       - PGUSER=postgres
       - PGPASSWORD=Azerty123!!!
       - OPENID_CLIENT=scissors-auth-client
-      - OPENID_AUTHORITY=http://keycloak:8080/realms/scissors-realm
+      - OPENID_AUTHORITY=https://auth.casbin:9443/realms/scissors-realm
       - OPENID_SECRET=chtX1m8YPSLos2AD7JSIYo4DHV5F2HCc
     depends_on:
       - pgsql
-  
+      - keycloak
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.casbin.rule=Host(`api.casbin`)"
+      - "traefik.http.routers.casbin.entrypoints=websecure"
+      - "traefik.http.routers.casbin.tls=true"
+      - "traefik.http.services.casbin.loadbalancer.server.port=8080"
+    networks:
+      - traefik-public
+      - internal
+
   pgsql:
     image: postgres:17
-    ports:
-      - "18534:5432" 
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Azerty123!!!
+      - POSTGRES_DB=casbin-minimal
     volumes:
       - pg-data:/var/lib/postgresql/data
-
-volumes:
-  pg-data: { }
-  keycloak_data: { }
+    networks:
+      - internal
