@@ -1,16 +1,10 @@
-﻿networks:
-  traefik-public:
-    external: false
-  internal:
-    external: false
-
-volumes:
+﻿volumes:
   pg-data: {}
   keycloak_data: {}
   traefik-certificates: {}
 
 services:
-  traefik:
+  proxy:
     image: traefik:v3.0
     command:
       - "--providers.docker=true"
@@ -23,29 +17,6 @@ services:
       - "9443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - traefik-public
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.0
-    command:
-      - "start-dev"
-      - "--http-port=8080"
-    env_file:
-      - kc.env
-    volumes:
-      - keycloak_data:/opt/keycloak/data
-    ports:
-      - "8081:8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.keycloak.rule=Host(`auth.casbin`)"
-      - "traefik.http.routers.keycloak.entrypoints=websecure"
-      - "traefik.http.routers.keycloak.tls=true"
-      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
-    networks:
-      - traefik-public
-      - internal
 
   casbin-api:
     image: casbinminimalapi
@@ -62,17 +33,14 @@ services:
       - OPENID_AUTHORITY=https://auth.casbin:9443/realms/scissors-realm
       - OPENID_SECRET=chtX1m8YPSLos2AD7JSIYo4DHV5F2HCc
     depends_on:
+      - proxy
       - pgsql
-      - keycloak
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.casbin.rule=Host(`api.casbin`)"
       - "traefik.http.routers.casbin.entrypoints=websecure"
       - "traefik.http.routers.casbin.tls=true"
       - "traefik.http.services.casbin.loadbalancer.server.port=8080"
-    networks:
-      - traefik-public
-      - internal
 
   pgsql:
     image: postgres:17
@@ -82,5 +50,3 @@ services:
       - POSTGRES_DB=casbin-minimal
     volumes:
       - pg-data:/var/lib/postgresql/data
-    networks:
-      - internal
