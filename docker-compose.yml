@@ -23,23 +23,21 @@ services:
     build:
       context: .
       dockerfile: CasbinMinimalApi/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - PG_CONNECTION_STRING=Host=pgsql;Database=casbin-minimal;
-      - PGUSER=postgres
-      - PGPASSWORD=Azerty123!!!
-      - OPENID_CLIENT=scissors-auth-client
-      - OPENID_AUTHORITY=https://auth.casbin:9443/realms/scissors-realm
-      - OPENID_SECRET=chtX1m8YPSLos2AD7JSIYo4DHV5F2HCc
+    env_file:
+      - api.env
     depends_on:
       - proxy
       - pgsql
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.casbin.rule=Host(`api.casbin`)"
-      - "traefik.http.routers.casbin.entrypoints=websecure"
-      - "traefik.http.routers.casbin.tls=true"
+      # Router HTTP
+      - "traefik.http.routers.casbin-http.rule=Host(`api.casbin`)"
+      - "traefik.http.routers.casbin-http.entrypoints=web"
+      - "traefik.http.services.casbin.loadbalancer.server.port=8080"
+      # Router HTTPS
+      - "traefik.http.routers.casbin-https.rule=Host(`api.casbin`)"
+      - "traefik.http.routers.casbin-https.entrypoints=websecure"
+      - "traefik.http.routers.casbin-https.tls=true"
       - "traefik.http.services.casbin.loadbalancer.server.port=8080"
 
   pgsql:

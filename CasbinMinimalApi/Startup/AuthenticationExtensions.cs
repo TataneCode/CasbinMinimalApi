@@ -31,7 +31,7 @@ public static class AuthenticationExtensions
         // Add OpenID Connect authentication
         var configuration = builder.Configuration;
         builder.Services.AddAuthentication()
-            .AddOpenIdConnect("keycloak", options =>
+            .AddOpenIdConnect("zitadel", options =>
             {
                 options.SignInScheme = IdentityConstants.ExternalScheme;
                 options.Authority = configuration.GetValue<string>("OPENID_AUTHORITY");
