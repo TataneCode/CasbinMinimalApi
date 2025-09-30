@@ -22,3 +22,12 @@ As there are no default dbcontext factory, follow those steps to run migration :
 - Run the migration according the context
   - dotnet ef migrations add "\<MigrationName\>" --context ScissorsDbContext --output-dir Persistence/Scissors/Migrations
   - dotnet ef migrations add "\<MigrationName\>" --context AuthenticationDbContext --output-dir Persistence/Authentication/Migrations
+
+## Secrets
+This application needs a connection to an open id authentication issuer to be fully operational.
+```env
+OPENID_CLIENT="<OpenIdClientId>"
+OPENID_AUTHORITY="<OpenIdAuthorityUrl>"
+OPENID_SECRET="<OpenIdSecret>"
+```
+It is currently tested with a [zitadel](https://zitadel.com/) cloud connection.

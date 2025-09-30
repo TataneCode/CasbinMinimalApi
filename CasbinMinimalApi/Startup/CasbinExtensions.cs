@@ -2,6 +2,7 @@ using Casbin;
 using Casbin.Persist;
 using Casbin.Persist.Adapter.EFCore;
 using CasbinMinimalApi.Application.Authorization;
+using CasbinMinimalApi.Constants;
 using CasbinMinimalApi.Infrastructure.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public static class CasbinExtensions
   {
     if (EF.IsDesignTime) return;
 
-    var connectionString = builder.Configuration["PG_CONNECTION_STRING"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    var connectionString = builder.Configuration[ConfigurationKey.ConnectionString] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
     var options = new DbContextOptionsBuilder<CasbinDbContext<int>>()
     .UseNpgsql(connectionString)
     .Options;

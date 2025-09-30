@@ -1,6 +1,6 @@
+using CasbinMinimalApi.Constants;
 using CasbinMinimalApi.Domain;
 using CasbinMinimalApi.Persistence.Authentication;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
 
 namespace CasbinMinimalApi.Startup;
@@ -30,19 +30,22 @@ public static class AuthenticationExtensions
         
         // Add OpenID Connect authentication
         var configuration = builder.Configuration;
-        builder.Services.AddAuthentication()
-            .AddOpenIdConnect("zitadel", options =>
-            {
-                options.SignInScheme = IdentityConstants.ExternalScheme;
-                options.Authority = configuration.GetValue<string>("OPENID_AUTHORITY");
-                options.ClientId = configuration.GetValue<string>("OPENID_CLIENT");
-                options.ClientSecret = configuration.GetValue<string>("OPENID_SECRET");
-                options.ResponseType = "code";
-                options.SaveTokens = true;
-                options.TokenValidationParameters.NameClaimType = "preferred_username";
-                options.TokenValidationParameters.RoleClaimType = "roles";
-                options.RequireHttpsMetadata = false;
-            });
+        if (Environment.GetEnvironmentVariable(ConfigurationKey.OpenIdEnabled) ==  OpenIdStatus.Enabled)
+        {
+            builder.Services.AddAuthentication()
+                .AddOpenIdConnect("zitadel", options =>
+                {
+                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                    options.Authority = configuration.GetValue<string>(ConfigurationKey.OpenIdAuthority);
+                    options.ClientId = configuration.GetValue<string>(ConfigurationKey.OpenIdClientId);
+                    options.ClientSecret = configuration.GetValue<string>(ConfigurationKey.OpenIdClientSecret);
+                    options.ResponseType = "code";
+                    options.SaveTokens = true;
+                    options.TokenValidationParameters.NameClaimType = "preferred_username";
+                    options.TokenValidationParameters.RoleClaimType = "roles";
+                    options.RequireHttpsMetadata = false;
+                });
+        }
 
         builder.Services.AddAuthorization();
     }
