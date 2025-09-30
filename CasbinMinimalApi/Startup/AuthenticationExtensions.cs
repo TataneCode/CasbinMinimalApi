@@ -9,29 +9,27 @@ public static class AuthenticationExtensions
 {
     public static void ConfigureSecurity(this WebApplicationBuilder builder)
     {
-        builder.Services.AddIdentityCore<NeighborUser>(o =>
-            {
-                o.User.RequireUniqueEmail = true;
-            })
+        var openIdEnabled = Environment.GetEnvironmentVariable(ConfigurationKey.OpenIdEnabled) == OpenIdStatus.Enabled;
+
+        builder.Services
+            .AddIdentityCore<NeighborUser>(o => o.User.RequireUniqueEmail = true)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AuthenticationDbContext>()
             .AddApiEndpoints();
 
         builder.Services
-            .AddAuthentication(IdentityConstants.ApplicationScheme)
+            .AddAuthentication(options =>
+            {
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                if (openIdEnabled)
+                    options.DefaultChallengeScheme = "zitadel";
+            })
             .AddIdentityCookies();
 
-        builder.Services.ConfigureApplicationCookie(options =>
+        if (openIdEnabled)
         {
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SameSite = SameSiteMode.Strict;
-            options.Cookie.Name = "casbin-minimal-api-auth";
-        });
-        
-        // Add OpenID Connect authentication
-        var configuration = builder.Configuration;
-        if (Environment.GetEnvironmentVariable(ConfigurationKey.OpenIdEnabled) ==  OpenIdStatus.Enabled)
-        {
+            var configuration = builder.Configuration;
             builder.Services.AddAuthentication()
                 .AddOpenIdConnect("zitadel", options =>
                 {
@@ -46,6 +44,14 @@ public static class AuthenticationExtensions
                     options.RequireHttpsMetadata = false;
                 });
         }
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.Name = "casbin-minimal-api-auth";
+            options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        });
 
         builder.Services.AddAuthorization();
     }

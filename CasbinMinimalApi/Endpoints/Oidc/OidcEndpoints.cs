@@ -12,9 +12,9 @@ public static class OidcEndpoints
         
         var group = builder.MapGroup("/oidc").WithTags("Oidc connection");
         
-        group.MapGet("/login", (HttpContext ctx) =>
+        group.MapGet("/challenge", (HttpContext ctx) =>
         {
-            var props = new AuthenticationProperties { RedirectUri = "/signedin" };
+            var props = new AuthenticationProperties { RedirectUri = "/oidc/signedin" };
             return Results.Challenge(props, ["zitadel"]);
         });
         group.MapGet("/signedin", () => Results.Ok(new { Message = "You have been signed in" }));

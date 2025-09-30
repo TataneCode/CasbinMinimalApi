@@ -1,4 +1,5 @@
 using CasbinMinimalApi.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace CasbinMinimanApi.Startup;
 
@@ -6,6 +7,12 @@ public static class EnvironmentExtensions
 {
     public static void AnalyseConfiguration(this ConfigurationManager configuration)
     {
+        if (EF.IsDesignTime)
+        {
+            Environment.SetEnvironmentVariable(ConfigurationKey.ConnectionString, "_");
+            return;
+        }
+        
         var openIdClientId = configuration.GetValue<string>(ConfigurationKey.OpenIdClientId);
         var openIdClientSecret = configuration.GetValue<string>(ConfigurationKey.OpenIdClientSecret);
         var openIdAuthority = configuration.GetValue<string>(ConfigurationKey.OpenIdAuthority);
