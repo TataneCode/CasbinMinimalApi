@@ -38,9 +38,7 @@ public static class AuthenticationExtensions
                 options.ClientId = configuration.GetValue<string>("OPENID_CLIENT");
                 options.ClientSecret = configuration.GetValue<string>("OPENID_SECRET");
                 options.ResponseType = "code";
-
                 options.SaveTokens = true;
-
                 options.TokenValidationParameters.NameClaimType = "preferred_username";
                 options.TokenValidationParameters.RoleClaimType = "roles";
                 options.RequireHttpsMetadata = false;

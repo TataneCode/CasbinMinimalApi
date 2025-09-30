@@ -6,10 +6,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		Readme.md = Readme.md
-		pg.env = pg.env
 		.gitignore = .gitignore
 		.github\workflows\docker-publish.yml = .github\workflows\docker-publish.yml
-		api.env = api.env
+		.env\api.env = .env\api.env
+		.env\pg.env = .env\pg.env
+		.env\secret.env = .env\secret.env
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CasbinMinimalApi.Tests.Unit", "CasbinMinimalApi.Tests.Unit\CasbinMinimalApi.Tests.Unit.csproj", "{358331F2-8D93-4DED-9B0F-167AF1433168}"

@@ -14,7 +14,7 @@ services:
       - "--log.level=DEBUG"
     ports:
       - "9480:80"
-      - "9443:443"
+      - "9444:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
@@ -24,7 +24,8 @@ services:
       context: .
       dockerfile: CasbinMinimalApi/Dockerfile
     env_file:
-      - api.env
+      - .env/api.env
+      - .env/secret.env
     depends_on:
       - proxy
       - pgsql
@@ -42,9 +43,7 @@ services:
 
   pgsql:
     image: postgres:17
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Azerty123!!!
-      - POSTGRES_DB=casbin-minimal
+    env_file:
+      - .env/pg.env
     volumes:
       - pg-data:/var/lib/postgresql/data
