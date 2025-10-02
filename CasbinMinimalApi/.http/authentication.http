@@ -1,4 +1,4 @@
-@CasbinMinimalApi_HostAddress = http://localhost:8680
+@CasbinMinimalApi_HostAddress = http://api.casbin:9480
 
 ### Identity - Register
 POST {{CasbinMinimalApi_HostAddress}}/register

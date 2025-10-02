@@ -12,7 +12,7 @@ public static class NeighborEndpoints
   {
     var group = app.MapGroup("/api/neighbors")
         .WithTags("Neighbors");
-
+    
     group.MapGet("/", GetAllAsync);
     group.MapGet("/{id}", GetByIdAsync).WithName("GetNeighborById");
     group.MapPost("/", CreateAsync).RequireAuthorization();

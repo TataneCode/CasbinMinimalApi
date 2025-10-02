@@ -1,7 +1,9 @@
+using CasbinMinimalApi.Constants;
 using CasbinMinimalApi.Domain;
 using CasbinMinimalApi.Persistence.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace CasbinMinimalApi.Startup;
 
@@ -9,17 +11,53 @@ public static class AuthenticationExtensions
 {
     public static void ConfigureSecurity(this WebApplicationBuilder builder)
     {
-        builder.Services.AddIdentityCore<NeighborUser>(o =>
-            {
-                o.User.RequireUniqueEmail = true;
-            })
+        var openIdEnabled = Environment.GetEnvironmentVariable(ConfigurationKey.OpenIdEnabled) == OpenIdStatus.Enabled;
+
+        builder.Services
+            .AddIdentityCore<NeighborUser>(o => o.User.RequireUniqueEmail = true)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AuthenticationDbContext>()
             .AddApiEndpoints();
 
-        builder.Services
-            .AddAuthentication(IdentityConstants.ApplicationScheme)
-            .AddIdentityCookies();
+        if (openIdEnabled)
+        {
+            var configuration = builder.Configuration;
+            var environment = builder.Environment;
+            builder.Services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                })
+                .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
+                    options.SignInScheme = IdentityConstants.ApplicationScheme;
+                    options.Authority = configuration.GetValue<string>(ConfigurationKey.OpenIdAuthority);
+                    options.ClientId = configuration.GetValue<string>(ConfigurationKey.OpenIdClientId);
+                    options.ClientSecret = configuration.GetValue<string>(ConfigurationKey.OpenIdClientSecret);
+                    options.ResponseType = OpenIdConnectResponseType.Code;
+                    options.SaveTokens = true;
+                    options.ClaimsIssuer = options.Authority;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.TokenValidationParameters.NameClaimType = "preferred_username";
+                    //options.RequireHttpsMetadata = false;
+                    if (environment.IsDevelopment() &&
+                        configuration.GetValue(ConfigurationKey.DisabledTlsValidation, false))
+                    {
+                        options.BackchannelHttpHandler = new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                        };
+                    }
+                })
+                .AddIdentityCookies();
+        }
+        else
+        {
+            builder.Services
+                .AddAuthentication(IdentityConstants.ApplicationScheme)
+                .AddIdentityCookies();
+        }
 
         builder.Services.ConfigureApplicationCookie(options =>
         {
@@ -27,24 +65,6 @@ public static class AuthenticationExtensions
             options.Cookie.SameSite = SameSiteMode.Strict;
             options.Cookie.Name = "casbin-minimal-api-auth";
         });
-        
-        // Add OpenID Connect authentication
-        var configuration = builder.Configuration;
-        builder.Services.AddAuthentication()
-            .AddOpenIdConnect("keycloak", options =>
-            {
-                options.SignInScheme = IdentityConstants.ExternalScheme;
-                options.Authority = configuration.GetValue<string>("OPENID_AUTHORITY");
-                options.ClientId = configuration.GetValue<string>("OPENID_CLIENT");
-                options.ClientSecret = configuration.GetValue<string>("OPENID_SECRET");
-                options.ResponseType = "code";
-
-                options.SaveTokens = true;
-
-                options.TokenValidationParameters.NameClaimType = "preferred_username";
-                options.TokenValidationParameters.RoleClaimType = "roles";
-                options.RequireHttpsMetadata = false;
-            });
 
         builder.Services.AddAuthorization();
     }

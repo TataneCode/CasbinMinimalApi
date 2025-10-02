@@ -1,4 +1,5 @@
 using CasbinMinimalApi.Application.Authorization;
+using CasbinMinimalApi.Constants;
 using CasbinMinimalApi.Persistence.Authentication;
 using CasbinMinimanApi.Persistence.Scissors;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ public static class DatabaseExtensions
     public static void ConfigureDatabase(this WebApplicationBuilder builder)
     {
         var connectionString =
-            builder.Configuration["PG_CONNECTION_STRING"]
+            builder.Configuration[ConfigurationKey.ConnectionString]
             ?? throw new InvalidOperationException("PG_CONNECTION_STRING is not set");
         builder.Services.AddDbContext<ScissorsDbContext>((_, b) =>
         {

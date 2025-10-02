@@ -1,8 +1,10 @@
 using CasbinMinimalApi.Endpoints;
 using CasbinMinimalApi.Startup;
+using CasbinMinimanApi.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AnalyseConfiguration();
 builder.Configuration.ValidateEnvironment();
 
 // Add services to the container.
