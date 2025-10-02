@@ -24,15 +24,21 @@ public static class AuthenticationExtensions
             var configuration = builder.Configuration;
             var environment = builder.Environment;
             builder.Services
-                .AddAuthentication(IdentityConstants.ApplicationScheme)
-                .AddOpenIdConnect(options =>
+                .AddAuthentication(options =>
                 {
-                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                })
+                .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
+                    options.SignInScheme = IdentityConstants.ApplicationScheme;
                     options.Authority = configuration.GetValue<string>(ConfigurationKey.OpenIdAuthority);
                     options.ClientId = configuration.GetValue<string>(ConfigurationKey.OpenIdClientId);
                     options.ClientSecret = configuration.GetValue<string>(ConfigurationKey.OpenIdClientSecret);
                     options.ResponseType = OpenIdConnectResponseType.Code;
                     options.SaveTokens = true;
+                    options.ClaimsIssuer = options.Authority;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.TokenValidationParameters.NameClaimType = "preferred_username";
                     //options.RequireHttpsMetadata = false;
                     if (environment.IsDevelopment() &&
                         configuration.GetValue(ConfigurationKey.DisabledTlsValidation, false))
