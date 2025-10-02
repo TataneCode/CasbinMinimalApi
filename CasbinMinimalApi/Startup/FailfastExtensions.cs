@@ -10,7 +10,12 @@ public static class FailfastExtensions
         string[] requiredSettings = [ConfigurationKey.ConnectionString];
         if (!EF.IsDesignTime)
         {
-            requiredSettings = [.. requiredSettings, ConfigurationKey.DatabaseUser, ConfigurationKey.DatabasePassword];
+            requiredSettings = [
+                .. requiredSettings, 
+                ConfigurationKey.DatabaseUser,
+                ConfigurationKey.DatabasePassword,
+                ConfigurationKey.Environment,
+                ConfigurationKey.Urls];
         }
 
         if (Environment.GetEnvironmentVariable(ConfigurationKey.OpenIdEnabled) == OpenIdStatus.Enabled)

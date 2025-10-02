@@ -11,6 +11,7 @@ internal static class ConfigurationKey
     internal const string OpenIdClientId = "OPENID_CLIENT";
     internal const string OpenIdClientSecret = "OPENID_SECRET";
     internal const string OpenIdAuthority = "OPENID_AUTHORITY";
+    internal const string DisabledTlsValidation = "DISABLE_TLS_VALIDATION";
     
     internal const string OpenIdEnabled = "OPENID_ENABLED";
 }
